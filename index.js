@@ -22,6 +22,7 @@ addTaskBtn.onclick = ()=>{
     taskStore.push(inputBox.value)
     console.log(taskStore)
     inputBox.value=null
+    addTaskBtn.classList.remove("active")
     showTasks()
 }
 
@@ -36,6 +37,6 @@ function showTasks(){
     {
         todoList.innerHTML+=allTasks[index]
     }
-    taskCounter.innerHTML = "You have " + taskStore.length + " tasks"
+    taskCounter.innerHTML = "Tasks remaining: " + taskStore.length
 }
 
