@@ -2,14 +2,14 @@ const inputBox = document.querySelector(".inputSection input")
 const addTaskBtn = document.querySelector(".inputSection button")
 const todoList = document.querySelector(".wrapper .todoList")
 const taskCounter = document.querySelector(".footer span")
+const clearAllBtn = document.querySelector(".footer button")
 
-const taskStore = []
+let taskStore = []
 
 showTasks()
 
 inputBox.onkeyup = ()=>{
     let userData = inputBox.value
-    console.log(userData.trim())
     if (userData.trim() == 0)
     {
         addTaskBtn.classList.remove("active")
@@ -20,7 +20,6 @@ inputBox.onkeyup = ()=>{
 
 addTaskBtn.onclick = ()=>{
     taskStore.push(inputBox.value)
-    console.log(taskStore)
     inputBox.value=null
     addTaskBtn.classList.remove("active")
     showTasks()
@@ -38,5 +37,10 @@ function showTasks(){
         todoList.innerHTML+=allTasks[index]
     }
     taskCounter.innerHTML = "Tasks remaining: " + taskStore.length
+}
+
+clearAllBtn.onclick = ()=>{
+    taskStore = []
+    showTasks()
 }
 
