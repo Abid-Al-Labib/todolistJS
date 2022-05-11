@@ -25,11 +25,17 @@ addTaskBtn.onclick = ()=>{
     showTasks()
 }
 
+function deleteTask(deleteBtn){
+    console.log(deleteBtn.value)
+    taskStore.splice(deleteBtn.value,1)
+    showTasks()
+}
+
 function showTasks(){
     allTasks = []
     todoList.innerHTML = null
     for (index = 0; index < taskStore.length; index++) {
-        newTask = `<li>${taskStore[index]}<span><button>🗑️</button></span></li>`
+        newTask = `<li>${taskStore[index]}<span><button value=${index} onclick='deleteTask(this)'>🗑️</button></span></li>`
         allTasks.push(newTask)
     }
     for (index = 0; index < allTasks.length; index++)
@@ -38,6 +44,7 @@ function showTasks(){
     }
     taskCounter.innerHTML = "Tasks remaining: " + taskStore.length
 }
+
 
 clearAllBtn.onclick = ()=>{
     taskStore = []
