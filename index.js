@@ -11,8 +11,8 @@ const bragWrapper = document.querySelector(".wrapper")
 const bragginItemFromList = document.querySelector(".braggingItem")
 
 let currentTaskName = ""
-let taskStore = []
-let braggingItemList = []
+let taskStore = new Map()
+let braggingItemList = new Map()
 
 
 
@@ -20,7 +20,7 @@ class braggingItem{
     constructor(title, tasks)
     {
         this.title = title
-        this.tasks = tasks
+        this.tasks = new Map(tasks)
     }
 }
 
@@ -60,22 +60,28 @@ braggingItemtitleInputBox.onkeyup = ()=>{
 
 
 addTaskBtn.onclick = ()=>{
-    taskStore.push(taskInputBox.value)
+    taskStore.set(taskStore.size, taskInputBox.value)
     taskInputBox.value=""
     addTaskBtn.classList.remove("active")
     showTasks()
 }
 
 function deleteTask(deleteBtn){
-    taskStore.splice(deleteBtn.value,1)
+    taskStore.delete(parseInt(deleteBtn.value))
+    tempMap = new Map()
+    for (const[key,value] of taskStore)
+    {
+        tempMap.set(tempMap.size,value)
+    }
+    taskStore=tempMap
     showTasks()
 }
 
 function showTasks(){
     allTasks = []
     todoList.innerHTML = null
-    for (index = 0; index < taskStore.length; index++) {
-        newTask = `<li>${taskStore[index]}<span><button value=${index} onclick='deleteTask(this)'>🗑️</button></span></li>`
+    for (index = 0; index < taskStore.size; index++) {
+        newTask = `<li>${taskStore.get(index)}<span><button value=${index} onclick='deleteTask(this)'>🗑️</button></span></li>`
         allTasks.push(newTask)
     }
     for (index = 0; index < allTasks.length; index++)
@@ -90,7 +96,7 @@ function showTitle(){
 }
 
 function clearAll(){
-    taskStore = []
+    taskStore.clear()
     braggingItemtitleInputBox.value=""
     currentTaskName=""
     showTasks()
@@ -103,8 +109,7 @@ clearAllBtn.onclick = ()=>{
 
 saveBraggingItemBtn.onclick = ()=>{
     let bragItem = new braggingItem(braggingItemtitleInputBox.value, taskStore)
-    braggingItemList.push(bragItem)
-    console
+    braggingItemList.set(braggingItemList.size, bragItem)
     updateList()
     clearAll()
     showBragWrapper(false)
@@ -114,10 +119,9 @@ saveBraggingItemBtn.onclick = ()=>{
 function updateList(){
     allItems = []
     braggingList.innerHTML = null
-    for (index = 0; index < braggingItemList.length; index++) {
-        console.log(braggingItemList[index].title)
+    for (index = 0; index < braggingItemList.size; index++) {
         newBragItem = `<li>
-                            <span class="braggingItem" onclick='openItemFromBraggingList(this.innerText)'>${braggingItemList[index].title}</span>
+                            <span class="braggingItem" onclick='openItemFromBraggingList(this.innerText)'>${braggingItemList.get(index).title}</span>
                             <span><button value=${index} onclick='deleteBragItem(this)'>🗑️</button></span>
                        </li>`
         allItems.push(newBragItem)
@@ -130,23 +134,29 @@ function updateList(){
 
 function deleteBragItem(deleteBtn)
 {
-    braggingItemList.splice(deleteBtn.value,1)
+    braggingItemList.delete(deleteBtn.value)
+    tempMap = new Map()
+    for (const[key,value] of braggingItemList)
+    {
+        tempMap.set(tempMap.size,value)
+    }
+    braggingItemList=tempMap
     updateList()
 }
 
 function openItemFromBraggingList(innerText)
 {
     let theBraggingItem = null
-    for (index = 0; index < braggingItemList.length; index++)
+    for (index = 0; index < braggingItemList.size; index++)
     {
-        if(braggingItemList[index].title==innerText)
+        if(braggingItemList.get(index).title==innerText)
         {
-            theBraggingItem = braggingItemList[index] 
+            theBraggingItem = braggingItemList.get(index) 
         }
     }
 
     currentTaskName= theBraggingItem.title
-    taskStore= theBraggingItem.tasks
+    taskStore = new Map(theBraggingItem.tasks)
     showBragWrapper(true)
     showTasks()
     showTitle()
